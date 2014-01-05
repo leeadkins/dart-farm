@@ -1,0 +1,16 @@
+body {
+    font-family: sans-serif;
+}
+
+h1 {
+    text-align: center;
+
+}
+
+#game_window {
+    display: block;
+    width: 768px;
+    height: 423px;
+    box-shadow: 0px 0px 20px #777;
+    margin: auto;
+}
