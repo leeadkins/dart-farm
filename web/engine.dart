@@ -224,8 +224,23 @@ class Sprite extends GameObject {
   int height = 0;
   int u = 0; // The x/y offset of the sprite within the sprite sheet provided.
   int v = 0;
+  int uWidth = 0;
+  int uHeight = 0;
 
-  Sprite(this.imageName, this.x, this.y, this.width, this.height, this.u, this.v) {
+  Sprite(this.imageName, this.x, this.y, this.width, this.height, this.u, this.v, {int sourceWidth, int sourceHeight}) {
+
+    if(sourceWidth != null) {
+      this.uWidth = sourceWidth;
+    } else {
+      this.uWidth = this.width;
+    }
+
+    if(sourceHeight != null) {
+      this.uHeight = sourceHeight;
+    } else {
+      this.uHeight = this.height;
+    }
+
     image = ResourceCache._resourceCache.getFile(imageName);
   }
 
@@ -243,8 +258,27 @@ class Sprite extends GameObject {
 
   void render(CanvasRenderingContext2D ctx) {
     if(this.image != false) {
-      ctx.drawImageScaledFromSource(this.image, this.u, this.v, this.width, this.height, this.getAbsoluteX(), this.getAbsoluteY(), this.width, this.height);
+      ctx.drawImageScaledFromSource(this.image, this.u, this.v, this.uWidth, this.uHeight, this.getAbsoluteX(), this.getAbsoluteY(), this.width, this.height);
     }
+  }
+}
+
+class Button extends Sprite {
+  bool mouseEventsEnabled = true;
+
+  List<Function> clickHandlers = new List<Function>();
+
+  Button(String imageName, int x, int y, int width, int height, int u, int v, int sourceWidth, int sourceHeight) : super(imageName, x, y, width, height, u, v, sourceWidth:sourceWidth, sourceHeight:sourceHeight);
+
+  bool onClick(MouseEvent event) {
+    clickHandlers.forEach((Function f){
+      f();
+    });
+    return true;
+  }
+
+  void whenClicked(Function function) {
+    clickHandlers.add(function);
   }
 }
 
@@ -259,6 +293,22 @@ class Tile extends GameObject {
   void render(CanvasRenderingContext2D ctx) {
     ctx.fillStyle = "#0f0";
     ctx.fillRect(this.x, this.y, 16, 16);
+  }
+}
+
+class Label extends GameObject {
+
+  int x;
+  int y;
+  String text;
+
+  Label(this.x, this.y, this.text);
+
+  void update(double time) {}
+
+  void render(CanvasRenderingContext2D ctx) {
+    ctx.strokeStyle = "#000";
+    ctx.strokeText(text, x, y);
   }
 }
 
